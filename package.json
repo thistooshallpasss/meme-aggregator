@@ -5,8 +5,9 @@
     "description": "Monorepo root for Meme Coin Aggregation Service.",
     "scripts": {
         "postinstall": "cd backend && npm install && npm run build",
-        "start": "npm run start:server & npm run start:worker",
-        "start:server": "cd backend && npm run start",
-        "start:worker": "cd backend && npm run worker"
+        "start": "npm run start:full",
+        "start:full": "npm run start:server & npm run start:worker",
+        "start:server": "REDIS_URL=$REDIS_URL cd backend && npm run start",
+        "start:worker": "REDIS_URL=$REDIS_URL cd backend && npm run worker"
     }
 }
