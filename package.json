@@ -5,8 +5,6 @@
     "main": "index.js",
     "scripts": {
         "postinstall": "cd backend && npm install",
-        "start": "node index.js",
-        "deploy:server": "cd backend && npm start",
-        "deploy:worker": "cd backend && npm run worker"
+        "start": "node index.js"
     }
 }
