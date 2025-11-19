@@ -4,17 +4,14 @@
         {
             "name": "meme-aggregator-server",
             "rootPath": "backend",
-            "buildCommand": "npm install && npm run build",
-            "startCommand": "npm run start",
-            "environmentIds": [
-                "redis"
-            ]
+            "buildCommand": "npm install --prefix backend && npm run build --prefix backend",
+            "startCommand": "npm run start --prefix backend"
         },
         {
             "name": "bullmq-worker",
             "rootPath": "backend",
-            "buildCommand": "npm install",
-            "startCommand": "npm run worker"
+            "buildCommand": "echo 'Build already handled by server service'",
+            "startCommand": "npm run worker --prefix backend"
         }
     ],
     "environments": {

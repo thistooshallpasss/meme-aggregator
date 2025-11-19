@@ -61,18 +61,20 @@ frontend
 // ----- START FILE: frontend/index.html -----
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
 
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>frontend</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>
 // ----- END FILE: frontend/index.html -----
 
 // ----- START FILE: frontend/tailwind.config.js -----
@@ -90,34 +92,61 @@ export default {
 // ----- END FILE: frontend/tailwind.config.js -----
 
 // ----- START FILE: frontend/tsconfig.app.json -----
+// {
+//   "compilerOptions": {
+//     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+//     "target": "ES2022",
+//     "useDefineForClassFields": true,
+//     "lib": [
+//       "ES2022",
+//       "DOM",
+//       "DOM.Iterable"
+//     ],
+//     "module": "ESNext",
+//     "types": [
+//       "vite/client"
+//     ],
+//     "skipLibCheck": true,
+//     /* Bundler mode */
+//     "moduleResolution": "bundler",
+//     "allowImportingTsExtensions": true,
+//     "verbatimModuleSyntax": true,
+//     "moduleDetection": "force",
+//     "noEmit": true,
+//     "jsx": "react-jsx",
+//     /* Linting */
+//     "strict": true,
+//     "noUnusedLocals": true,
+//     "noUnusedParameters": true,
+//     "noFallthroughCasesInSwitch": true,
+//     "noUncheckedSideEffectImports": true
+//   },
+//   "include": [
+//     "src"
+//   ]
+// }
 {
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",
-    "useDefineForClassFields": true,
     "lib": [
       "ES2022",
       "DOM",
       "DOM.Iterable"
     ],
     "module": "ESNext",
-    "types": [
-      "vite/client"
-    ],
-    "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
     "jsx": "react-jsx",
-    /* Linting */
     "strict": true,
+    "skipLibCheck": true,
+    /* Required for Vite */
+    "moduleResolution": "bundler",
+    /* IMPORTANT FIX */
+    "verbatimModuleSyntax": false,
+    /* OK to keep */
+    "allowImportingTsExtensions": true,
+    /* Good optimizations */
+    "noEmit": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUnusedParameters": true
   },
   "include": [
     "src"
@@ -384,6 +413,7 @@ function App() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Sources</th>
             </tr>
           </thead>
+
           <tbody className="divide-y divide-gray-800">
             {tokens.length === 0 ? (
               <tr>
@@ -393,42 +423,35 @@ function App() {
               </tr>
             ) : (
               tokens.map((token) => (
-                <motion.tr
-                  key={token.token_address}
-                  className="hover:bg-gray-700 transition-colors bg-gray-900"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-white">{token.token_ticker}</div>
-                    <div className="text-xs text-gray-400 truncate w-32">{token.token_name}</div>
+                // ✅ FIX: Plain <tr> use kiya
+                <tr key={token.token_address} className="bg-gray-900 hover:bg-gray-700 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="text-white font-medium">{token.token_ticker}</div>
+                    <div className="text-gray-400 text-xs truncate w-32">{token.token_name}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+
+                  <td className="px-6 py-4">
+                    {/* ✅ FIX: key={price} hata kar layout use kiya, taaki smooth update ho */}
                     <motion.div
-                      key={token.price_sol}
-                      initial={{ opacity: 0.5, backgroundColor: 'rgba(52, 211, 153, 0.2)' }}
-                      animate={{ opacity: 1, backgroundColor: 'rgba(0, 0, 0, 0)' }}
-                      transition={{ duration: 0.8 }}
                       layout
-                      className="bg-transparent"
+                      initial={{ opacity: 0.3 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.4 }}
                     >
                       {token.price_sol.toPrecision(6)}
                     </motion.div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {formatChange(token.price_1hr_change || 0)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                    SOL {token.volume_sol.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                    SOL {token.liquidity_sol.toFixed(0)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
+
+                  <td className="px-6 py-4">{formatChange(token.price_1hr_change || 0)}</td>
+
+                  <td className="px-6 py-4 text-gray-300">SOL {token.volume_sol.toFixed(2)}</td>
+
+                  <td className="px-6 py-4 text-gray-300">SOL {token.liquidity_sol.toFixed(0)}</td>
+
+                  <td className="px-6 py-4 text-gray-400 text-xs">
                     {token.protocol.split(', ').slice(0, 2).join(', ')}
                   </td>
-                </motion.tr>
+                </tr>
               ))
             )}
           </tbody>
@@ -443,7 +466,6 @@ function App() {
 }
 
 export default App;
-
 // ----- END FILE: frontend/src/App.tsx -----
 
 // ----- START FILE: frontend/src/main.tsx -----
@@ -461,7 +483,6 @@ createRoot(document.getElementById('root')!).render(
 // ----- END FILE: frontend/src/main.tsx -----
 
 // ----- START FILE: frontend/src/types/index.ts -----
-// frontend/src/types/index.ts
 export interface TokenData {
     token_address: string;
     token_name: string;
@@ -474,7 +495,6 @@ export interface TokenData {
     price_1hr_change?: number;
     protocol: string;
 }
-
 // ----- END FILE: frontend/src/types/index.ts -----
 
 // ----- START FILE: frontend/src/App.css -----
@@ -533,7 +553,7 @@ export interface TokenData {
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 // Backend se copy kiye gaye types ko yahan import karo
-import { TokenData } from '../types/index';
+import { TokenData } from '../types/index.ts';
 
 // Initial empty data state
 const initialData: TokenData[] = [];
@@ -607,7 +627,9 @@ export const useRealTimeData = () => {
 
 // ----- DIRECTORY STRUCTURE: backend -----
 backend
+├── Dockerfile
 ├── docker-compose.yml
+├── jest.config.js
 ├── package.json
 ├── src
 │   ├── app.ts
@@ -627,12 +649,206 @@ backend
 │   ├── types
 │   │   └── index.ts
 │   ├── utils
+│   │   ├── pagination.ts
 │   │   └── redis.ts
 │   └── workers
 │       └── fetchWorker.ts
+├── tests
+│   ├── services
+│   │   └── aggregator.test.ts
+│   └── utils
+│       └── pagination.test.ts
 └── tsconfig.json
 
-10 directories, 15 files
+13 directories, 20 files
+
+// ----- START FILE: backend/Dockerfile -----
+# Stage 1: Build Stage (Dependencies install karna)
+FROM node:20-alpine AS builder
+
+# Set working directory inside the container
+WORKDIR /app/backend
+
+# Copy package.json and install dependencies
+COPY package.json .
+COPY package-lock.json .
+RUN npm install
+
+# Copy source code
+COPY . .
+RUN npm run build # Production deploy ke liye code compile karna zaroori hai
+
+# Stage 2: Production Setup (Lightweight runtime)
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app/backend
+
+# Copy installed dependencies and built code from builder stage
+COPY --from=builder /app/backend/node_modules ./node_modules
+COPY --from=builder /app/backend/dist ./dist
+COPY --from=builder /app/backend/src ./src
+
+# ✅ FIX APPLIED: --from=builder use kiya
+COPY --from=builder /app/backend/package.json .
+COPY --from=builder /app/backend/tsconfig.json .
+COPY --from=builder /app/backend/.env .
+
+# Expose the port where Fastify will run
+EXPOSE 4000
+
+# Set environment variable (This is crucial for deployment platforms)
+ENV NODE_ENV production
+
+# Default command (npm start -> node dist/app.js)
+CMD ["npm", "run", "start"]
+// ----- END FILE: backend/Dockerfile -----
+
+// ----- START FILE: backend/jest.config.js -----
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+module.exports = {
+    preset: 'ts-jest',
+    testEnvironment: 'node',
+    // Test files ko .test.ts extension se pehchana jayega
+    testMatch: ["**/tests/**/*.test.ts"],
+    // Src folder mein tests run honge
+    rootDir: './',
+    modulePaths: ["<rootDir>/src"],
+    moduleFileExtensions: ["ts", "js"],
+    // Coverage report kahan save hoga
+    collectCoverageFrom: ["src/**/*.ts", "!src/server.ts", "!src/app.ts", "!src/utils/redis.ts"],
+};
+// ----- END FILE: backend/jest.config.js -----
+
+// ----- START FILE: backend/tests/utils/pagination.test.ts -----
+import { applyCursorPagination } from '../../src/utils/pagination';
+import { TokenData } from '../../src/types';
+
+// Sample data (sorted by volume_sol descending)
+const mockTokens: TokenData[] = [
+    { token_address: 'A', token_ticker: 'A', volume_sol: 1000 } as TokenData,
+    { token_address: 'B', token_ticker: 'B', volume_sol: 800 } as TokenData,
+    { token_address: 'C', token_ticker: 'C', volume_sol: 600 } as TokenData,
+    { token_address: 'D', token_ticker: 'D', volume_sol: 400 } as TokenData,
+    { token_address: 'E', token_ticker: 'E', volume_sol: 200 } as TokenData,
+];
+
+describe('Cursor Pagination Utility Tests', () => {
+
+    // Helper function to encode address to cursor
+    const encode = (address: string) => Buffer.from(address).toString('base64');
+
+    test('should return the first page correctly', () => {
+        const result = applyCursorPagination(mockTokens, 2, undefined);
+
+        expect(result.data.length).toBe(2);
+        expect(result.data[0].token_ticker).toBe('A');
+        expect(result.data[1].token_ticker).toBe('B');
+
+        // Next cursor should point to the last element of the current page (B)
+        expect(result.next_cursor).toBe(encode('B'));
+    });
+
+    test('should return the second page using cursor', () => {
+        const cursorB = encode('B'); // Cursor is the address of token B
+
+        const result = applyCursorPagination(mockTokens, 2, cursorB);
+
+        expect(result.data.length).toBe(2);
+        expect(result.data[0].token_ticker).toBe('C');
+        expect(result.data[1].token_ticker).toBe('D');
+
+        expect(result.next_cursor).toBe(encode('D'));
+    });
+
+    test('should handle the last page correctly', () => {
+        const cursorD = encode('D');
+
+        const result = applyCursorPagination(mockTokens, 2, cursorD);
+
+        expect(result.data.length).toBe(1); // Only token E remains
+        expect(result.data[0].token_ticker).toBe('E');
+
+        expect(result.next_cursor).toBeNull(); // No next page
+    });
+
+    test('should handle limit larger than array size', () => {
+        const result = applyCursorPagination(mockTokens, 50, undefined);
+        expect(result.data.length).toBe(5);
+        expect(result.next_cursor).toBeNull();
+    });
+});
+// ----- END FILE: backend/tests/utils/pagination.test.ts -----
+
+// ----- START FILE: backend/tests/services/aggregator.test.ts -----
+import { mergeTokenData } from '../../src/services/aggregator';
+import { TokenData } from '../../src/types';
+
+describe('Aggregator Service Tests', () => {
+    // Sample Data: Same token (MOODENG SOL) on 3 different DEXs
+    const mockTokenA: TokenData = {
+        token_address: 'TOKEN_MOODENG_SOL',
+        token_name: 'Moo Deng',
+        token_ticker: 'MOODENG',
+        price_sol: 0.000010,
+        market_cap_sol: 1000,
+        volume_sol: 50,
+        liquidity_sol: 500, // Highest Liquidity
+        transaction_count: 0,
+        price_1hr_change: -1.0,
+        protocol: 'Raydium'
+    };
+
+    const mockTokenB: TokenData = {
+        token_address: 'TOKEN_MOODENG_SOL',
+        token_name: 'Moo Deng',
+        token_ticker: 'MOODENG',
+        price_sol: 0.000008, // Lower Price
+        market_cap_sol: 800,
+        volume_sol: 30,
+        liquidity_sol: 200,
+        transaction_count: 0,
+        price_1hr_change: 2.5, // Best Price Change
+        protocol: 'Orca'
+    };
+
+    const mockTokenC: TokenData = {
+        token_address: 'TOKEN_MOODENG_SOL',
+        token_name: 'Moo Deng',
+        token_ticker: 'MOODENG',
+        price_sol: 0.000012, // Highest Price, Low Liquidity
+        market_cap_sol: 1200,
+        volume_sol: 20,
+        liquidity_sol: 100,
+        transaction_count: 0,
+        price_1hr_change: 0.5,
+        protocol: 'Meteora'
+    };
+
+    test('should correctly merge data from multiple sources', () => {
+        const merged = mergeTokenData([mockTokenA, mockTokenB, mockTokenC]);
+
+        expect(merged).not.toBeNull();
+        if (!merged) return;
+
+        // 1. Total Volume should be summed up (50 + 30 + 20 = 100)
+        expect(merged.volume_sol).toBe(100);
+
+        // 2. Total Liquidity should be summed up (500 + 200 + 100 = 800)
+        expect(merged.liquidity_sol).toBe(800);
+
+        // 3. Price should be selected from the source with the HIGHEST liquidity (Mock A: 500 liquidity, Price: 0.000010)
+        expect(merged.price_sol).toBe(0.000010);
+
+        // 4. Protocols should be merged
+        expect(merged.protocol).toContain('Raydium, Orca, Meteora');
+    });
+
+    test('should return null if array is empty', () => {
+        expect(mergeTokenData([])).toBeNull();
+    });
+});
+// ----- END FILE: backend/tests/services/aggregator.test.ts -----
 
 // ----- START FILE: backend/package.json -----
 {
@@ -643,6 +859,7 @@ backend
   "scripts": {
     "dev": "nodemon --exec ts-node src/app.ts",
     "build": "tsc",
+    "test": "jest",
     "start": "node dist/app.js",
     "worker": "ts-node src/workers/fetchWorker.ts"
   },
@@ -668,17 +885,19 @@ backend
   },
   "devDependencies": {
     "@types/got": "^9.6.12",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
     "@types/node-cron": "^3.0.11",
     "@types/socket.io": "^3.0.1",
     "@types/socket.io-client": "^1.4.36",
     "@types/ws": "^8.18.1",
+    "jest": "^30.2.0",
     "nodemon": "^3.1.11",
+    "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
 }
-
 // ----- END FILE: backend/package.json -----
 
 // ----- START FILE: backend/.env -----
@@ -721,6 +940,33 @@ services:
     ports:
       - "6379:6379"
     restart: always
+
+  server:
+    build: .
+    container_name: meme_aggregator_api
+    depends_on:
+      - redis
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - REDIS_URL=redis://redis:6379 # Internal Docker Network use karna
+      - PORT=4000
+    command: npm run dev # Fastify server + Socket.io + Cron
+
+  worker:
+    build: .
+    container_name: meme_aggregator_worker
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run worker # BullMQ Worker process
 
 // ----- END FILE: backend/docker-compose.yml -----
 
@@ -908,6 +1154,56 @@ const start = async () => {
 start();
 // ----- END FILE: backend/src/app.ts -----
 
+// ----- START FILE: backend/src/utils/pagination.ts -----
+import { TokenData } from '../types';
+
+export interface CursorPaginationResult {
+    data: TokenData[];
+    next_cursor: string | null;
+    count: number;
+}
+
+// Cursor-based pagination function
+export const applyCursorPagination = (
+    sortedTokens: TokenData[],
+    limit: number,
+    cursor: string | undefined
+): CursorPaginationResult => {
+
+    let startIndex = 0;
+
+    // Cursor ko base64 se decode karo (Example: tokenAddress)
+    if (cursor) {
+        try {
+            const decodedCursor = Buffer.from(cursor, 'base64').toString('ascii');
+            // Hum simply token address ko cursor man rahe hain
+            const cursorIndex = sortedTokens.findIndex(t => t.token_address === decodedCursor);
+            if (cursorIndex !== -1) {
+                startIndex = cursorIndex + 1;
+            }
+        } catch (e) {
+            console.error("Invalid cursor provided.");
+        }
+    }
+
+    const endIndex = startIndex + limit;
+    const pageData = sortedTokens.slice(startIndex, endIndex);
+
+    let nextCursor = null;
+
+    if (endIndex < sortedTokens.length) {
+        // Next page ka pehla element ka address encode karo
+        nextCursor = Buffer.from(pageData[pageData.length - 1].token_address).toString('base64');
+    }
+
+    return {
+        data: pageData,
+        next_cursor: nextCursor,
+        count: pageData.length,
+    };
+};
+// ----- END FILE: backend/src/utils/pagination.ts -----
+
 // ----- START FILE: backend/src/utils/redis.ts -----
 import Redis from 'ioredis';
 import { config } from '../config/env';
@@ -977,62 +1273,56 @@ export const addTokenFetchJob = async (data: TokenJobData) => {
 // ----- END FILE: backend/src/queues/tokenQueue.ts -----
 
 // ----- START FILE: backend/src/workers/fetchWorker.ts -----
-import { socketPublisher } from '../sockets/socketManager'; // <--- New Import
+import { socketPublisher } from '../sockets/socketManager';
 import { Worker, Job } from 'bullmq';
 import { connection, TOKEN_FETCH_QUEUE, TokenJobData } from '../queues/tokenQueue';
 import { fetchDexScreenerTokens } from '../services/dexProvider';
-import { mergeTokenData } from '../services/aggregator';
+import { mergeTokenData } from '../services/aggregator'; // <-- Correct import
 import redis from '../utils/redis';
 
-// Cache key
 const CACHE_KEY_PREFIX = 'token:merged:';
-const CACHE_TTL_SECONDS = 30; // 30 seconds TTL
+const CACHE_TTL_SECONDS = 30;
 
-// Worker function
 const processTokenJob = async (job: Job<TokenJobData>) => {
     const { tokenAddress } = job.data;
 
-    // 1. Data Fetch karo
+    // 1. Fetch DexScreener data
     const rawSources = await fetchDexScreenerTokens(tokenAddress);
-
     if (rawSources.length === 0) {
-        console.log(`[Worker] No data found for ${tokenAddress}`);
+        console.log(`[Worker] No DexScreener data found for ${tokenAddress}`);
         return;
     }
 
-    // 2. Data Aggregate karo
-    const mergedToken = mergeTokenData(rawSources);
-
+    // 2. Aggregate & Merge with Jupiter price
+    const mergedToken = mergeTokenData(rawSources); // <-- FIX: Simple merge use kiya
     if (!mergedToken) {
         throw new Error(`Failed to merge data for ${tokenAddress}`);
     }
 
-    // 3. Cache mein Save karo
+    // 3. Save in Redis cache
     const cacheKey = `${CACHE_KEY_PREFIX}${mergedToken.token_address}`;
-
     await redis.set(cacheKey, JSON.stringify(mergedToken), 'EX', CACHE_TTL_SECONDS);
 
-    // 4. Update Publish karo Socket Server ko
+    // 4. Publish to Socket Server
     await socketPublisher.publish(
         'token_price_updates',
-        JSON.stringify(mergedToken) // Pura merged token object bhej do
+        JSON.stringify(mergedToken)
     );
 
     console.log(`[Worker] ✅ Processed & Cached: ${mergedToken.token_ticker} | Price: ${mergedToken.price_sol}`);
 
-    // (Future Step: Yahan hum Socket.io ko update bhejenge)
     return mergedToken;
 };
 
-// Worker instance
 export const tokenWorker = new Worker<TokenJobData>(TOKEN_FETCH_QUEUE, processTokenJob, {
     connection,
-    concurrency: 5, // Ek saath 5 jobs process karo
+    concurrency: 5,
 });
 
 tokenWorker.on('failed', (job, err) => {
     console.error(`[Worker] Job ${job?.id} failed with error:`, err);
 });
+
 // ----- END FILE: backend/src/workers/fetchWorker.ts -----
 
 // ----- START FILE: backend/src/routes/discover.ts -----
@@ -1040,6 +1330,7 @@ import { FastifyInstance } from 'fastify';
 import redis from '../utils/redis';
 import { TokenData } from '../types';
 import { fetchTokenListAndCache } from '../services/tokenDiscovery';
+import { applyCursorPagination, CursorPaginationResult } from '../utils/pagination';
 
 type SortableTokenKeys = 'volume_sol' | 'price_sol' | 'market_cap_sol' | 'liquidity_sol';
 
@@ -1063,14 +1354,14 @@ export default async function discoverRoutes(app: FastifyInstance) {
             .filter(data => data)
             .map(data => JSON.parse(data!));
 
-        const sortedTokens = tokens
-            .sort((a, b) => b[sortKey] - a[sortKey])
-            .slice(0, limit);
+        const sortedTokens = tokens.sort((a, b) => (b[sortKey] || 0) - (a[sortKey] || 0));
 
-        const response = {
-            count: sortedTokens.length,
-            next_cursor: null,
-            data: sortedTokens,
+        // Apply cursor-based pagination
+        const paginatedResult = applyCursorPagination(sortedTokens, Number(limit), cursor);
+        const response: CursorPaginationResult & { next_cursor: string | null } = {
+            count: paginatedResult.count,
+            next_cursor: paginatedResult.next_cursor,
+            data: paginatedResult.data,
         };
 
         await redis.set(CACHE_KEY, JSON.stringify(response), 'EX', 60);
@@ -1148,29 +1439,16 @@ export const fetchTokenListAndCache = async (): Promise<boolean> => {
 // ----- START FILE: backend/src/services/aggregator.ts -----
 import { TokenData } from '../types';
 
-// Hum token ko chainID aur address se unique banayenge.
-// Filhaal, DexScreener hume sirf address de raha hai, lekin alag-alag chains
-// ke liye hume address aur chainId dono chahiye.
-// Hum yahan simplify karne ke liye ek unique key banate hain.
 const getCanonicalId = (token: TokenData): string => {
-    // Example: Solana tokens ka address Raydium/Orca pe same hai, toh woh merge honge.
-    // Uniswap (Ethereum) ka address alag hai, toh woh alag token hai.
-    // Hum simple 'TOKENADDRESS:PROTOCOL' use karenge agar address alag ho, varna Ticker se merge karenge.
     return token.token_address;
 };
-
 
 export const mergeTokenData = (sources: TokenData[]): TokenData | null => {
     if (sources.length === 0) return null;
 
-    // 1. Ek base token utha lo
     const base = sources[0];
-
-    // 2. Aggregate values (Hum volume aur liquidity ko sum karenge)
     let totalVolume = 0;
     let totalLiquidity = 0;
-
-    // 3. Sabse high-liquidity wala price select karenge (most trusted price)
     let bestPrice: number = 0;
     let maxLiquidity: number = 0;
     let bestPriceChange: number = base.price_1hr_change;
@@ -1189,15 +1467,15 @@ export const mergeTokenData = (sources: TokenData[]): TokenData | null => {
         }
     }
 
-    // 4. Final Merged Token return karo
     return {
         ...base,
         price_sol: bestPrice || base.price_sol,
         volume_sol: totalVolume,
         liquidity_sol: totalLiquidity,
         price_1hr_change: bestPriceChange,
-        protocol: Array.from(new Set(sourceProtocols)).join(', '), // List all protocols
+        protocol: Array.from(new Set(sourceProtocols)).join(', '),
     };
 };
+
 // ----- END FILE: backend/src/services/aggregator.ts -----
 
