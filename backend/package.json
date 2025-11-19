@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "nodemon --exec ts-node src/app.ts",
     "build": "tsc",
-    "test": "jest",
     "start": "node dist/app.js",
-    "worker": "ts-node src/workers/fetchWorker.ts"
+    "worker": "ts-node src/workers/fetchWorker.ts",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
