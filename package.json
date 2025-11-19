@@ -2,9 +2,7 @@
     "name": "meme-aggregator-monorepo",
     "version": "1.0.0",
     "private": true,
-    "main": "index.js",
     "scripts": {
-        "postinstall": "cd backend && npm install",
-        "start": "node index.js"
+        "postinstall": "cd backend && npm install"
     }
 }
