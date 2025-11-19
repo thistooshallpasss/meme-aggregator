@@ -48,7 +48,7 @@ The system is designed around separation of concerns, asynchronous job processin
 
 1.  **Clone Repository:**
     ```bash
-    git clone [Your GitHub URL]
+    git clone https://github.com/thistooshallpasss/meme-aggregator
     cd meme-aggregator
     ```
 
