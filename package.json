@@ -5,6 +5,7 @@
     "description": "Monorepo root for Meme Coin Aggregation Service.",
     "scripts": {
         "postinstall": "cd backend && npm install",
+        "start": "echo \"Starting monorepo... Railway will follow railway.json\"",
         "deploy:server": "cd backend && npm run start",
         "deploy:worker": "cd backend && npm run worker"
     }
