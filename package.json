@@ -3,6 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "postinstall": "cd backend && npm install"
+        "start": "railpack",
+        "postinstall": "cd backend && npm install",
+        "deploy:server": "cd backend && npm run start",
+        "deploy:worker": "cd backend && npm run worker"
     }
 }
