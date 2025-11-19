@@ -1,3 +1,4 @@
+import './cron/fetchTrending';
 import discoverRoutes from './routes/discover'; // <--- New Import
 import { setupSocketIO } from './sockets/socketManager';
 import Fastify from 'fastify';
@@ -20,7 +21,6 @@ app.register(discoverRoutes, { prefix: '/api/v1/discover' }); // <--- New Line
 
 // Health Check Route (Resume/Interviews ke liye zaroori)
 app.get('/ping', async (request, reply) => {
-    // Check if Redis is actually working
     const redisStatus = redis.status === 'ready' ? 'Connected' : 'Disconnected';
 
     return {
@@ -45,25 +45,26 @@ app.get('/test-fetch', async (request, reply) => {
 
 const start = async () => {
     try {
-        // 1. SOCKET.IO INITIALIZATION: Pehle setup karo
-        setupSocketIO(app); // <-- FIX: YE LINE UPAR LE AAYE
+        // 1. SOCKET.IO INITIALIZATION:
+        setupSocketIO(app);
 
         // 2. Fastify server ko listen karwao
         await app.listen({ port: Number(config.PORT), host: '0.0.0.0' });
         console.log(`🚀 Server running at http://localhost:${config.PORT}`);
 
-        // Redis connection check (yeh automatic ho chuka hoga, bas log kar rahe hain)
+        // Redis connection check
         console.log("✅ Redis Connected Successfully");
 
-        // Initial hardcoded jobs add karo (CRON add hone tak)
-        const { addTokenFetchJob } = require('./queues/tokenQueue');
-        addTokenFetchJob({ tokenAddress: 'ED5nyyWEzpPPiWimP8vYm7sD7TD3LAt3Q3gRTWHzPJBY' });
-        addTokenFetchJob({ tokenAddress: '0x28561B8A2360F463011c16b6Cc0B0cbEF8dbBcad' });
+        // ❌ REMOVE THESE (CRON already fetches 50 tokens every 30s)
+        // const { addTokenFetchJob } = require('./queues/tokenQueue');
+        // addTokenFetchJob({ tokenAddress: 'ED5nyyWEzpPPiWimP8vYm7sD7TD3LAt3Q3gRTWHzPJBY' });
+        // addTokenFetchJob({ tokenAddress: '0x28561B8A2360F463011c16b6Cc0B0cbEF8dbBcad' });
+
+        // ✔ Cron handle kar raha hai sab — NO NEED FOR HARDCODED JOBS
     } catch (err) {
         app.log.error(err);
         process.exit(1);
     }
 };
-// NOTE: Worker ka pub/sub ordering issue Fix 2 se solve ho chuka hai (import time par).
 
 start();
