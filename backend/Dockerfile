@@ -9,9 +9,9 @@ COPY package.json .
 COPY package-lock.json .
 RUN npm install
 
-# Copy source code
+# Copy source code and Build (TS compilation)
 COPY . .
-RUN npm run build # Production deploy ke liye code compile karna zaroori hai
+RUN npm run build # <--- Ye line zaroori hai production (dist) folder banane ke liye
 
 # Stage 2: Production Setup (Lightweight runtime)
 FROM node:20-alpine
@@ -19,21 +19,17 @@ FROM node:20-alpine
 # Set working directory
 WORKDIR /app/backend
 
-# Copy installed dependencies and built code from builder stage
+# Copy only necessary production files
 COPY --from=builder /app/backend/node_modules ./node_modules
-COPY --from=builder /app/backend/dist ./dist
-COPY --from=builder /app/backend/src ./src
-
-# ✅ FIX APPLIED: --from=builder use kiya
+COPY --from=builder /app/backend/dist ./dist 
 COPY --from=builder /app/backend/package.json .
-COPY --from=builder /app/backend/tsconfig.json .
 COPY --from=builder /app/backend/.env .
 
 # Expose the port where Fastify will run
 EXPOSE 4000
 
-# Set environment variable (This is crucial for deployment platforms)
+# Set environment variable 
 ENV NODE_ENV production
 
-# Default command (npm start -> node dist/app.js)
-CMD ["npm", "run", "start"]
+# CMD ko Render service mein define karenge
+CMD ["node", "dist/app.js"]
