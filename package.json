@@ -2,11 +2,11 @@
     "name": "meme-aggregator-monorepo",
     "version": "1.0.0",
     "private": true,
-    "description": "Monorepo root for Meme Coin Aggregation Service.",
+    "main": "index.js",
     "scripts": {
         "postinstall": "cd backend && npm install",
-        "start": "echo \"Starting monorepo... Railway will follow railway.json\"",
-        "deploy:server": "cd backend && npm run start",
+        "start": "node index.js",
+        "deploy:server": "cd backend && npm start",
         "deploy:worker": "cd backend && npm run worker"
     }
 }
