@@ -1,8 +1,12 @@
+// backend/src/queues/connection.ts
 import { ConnectionOptions } from 'bullmq';
 import { config } from '../config/env';
 
-// BullMQ uses Redis, toh hum wohi settings use karenge
+// FIX: REDIS_URL string se components extract karo (No new URL() call in runtime)
+const url = new URL(config.REDIS_URL);
+
 export const connection: ConnectionOptions = {
-    host: new URL(config.REDIS_URL).hostname,
-    port: parseInt(new URL(config.REDIS_URL).port || '6379'),
+    host: url.hostname,
+    port: parseInt(url.port || '6379'),
+    password: url.password || undefined,
 };
