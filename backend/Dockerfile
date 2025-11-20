@@ -23,7 +23,7 @@ WORKDIR /app/backend
 COPY --from=builder /app/backend/node_modules ./node_modules
 COPY --from=builder /app/backend/dist ./dist 
 COPY --from=builder /app/backend/package.json .
-COPY --from=builder /app/backend/.env .
+# COPY --from=builder /app/backend/.env .
 
 # Expose the port where Fastify will run
 EXPOSE 4000
